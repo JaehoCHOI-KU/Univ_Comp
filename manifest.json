@@ -1,0 +1,18 @@
+{
+  "name": "국립목포해양대학교 대학 경쟁력 비교분석기",
+  "short_name": "MMU 비교기",
+  "description": "목포해양대와 타 국립대학 간의 연구 역량 및 취업/교육 지표 비교 분석 어플리케이션",
+  "start_url": "compare.html",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#001F3F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/512/compass.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

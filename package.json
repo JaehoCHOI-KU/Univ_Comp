@@ -1,0 +1,19 @@
+{
+  "name": "mmu-ir-performance",
+  "version": "1.0.0",
+  "description": "국립목포해양대학교 대학성과관리 시스템 (MMU IR 대시보드)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 3000"
+  },
+  "keywords": [
+    "mokpo",
+    "maritime",
+    "university",
+    "performance",
+    "management",
+    "dashboard"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

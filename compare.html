@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <!-- 모바일 기기에서의 터치 줌 억제 및 앱 느낌의 비율 유지 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MMU 대학 경쟁력 비교분석기</title>
+    <!-- 구글 폰트 및 라이브러리 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 모바일 PWA 파일 연결 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#001F3F">
+    <!-- 커스텀 모바일 전용 스타일시트 -->
+    <link rel="stylesheet" href="compare_style.css">
+</head>
+<body>
+    <div class="mobile-viewport">
+        <!-- 모바일 헤더 -->
+        <header class="app-header">
+            <a href="index.html" class="header-back-btn">
+                <i data-lucide="arrow-left"></i>
+            </a>
+            <div class="header-app-title">
+                <h2>국립대 경쟁력 비교기</h2>
+                <span>Mokpo Maritime Univ.</span>
+            </div>
+            <div class="header-status">
+                <i data-lucide="shield-check" class="verified-icon"></i>
+            </div>
+        </header>
+
+        <!-- 모바일 슬라이드 콘텐츠 컨테이너 -->
+        <main class="app-main-content">
+
+            <!-- 1. 홈 탭 (Home) -->
+            <section id="tab-home" class="tab-view active">
+                <div class="hero-card">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <span class="hero-tag">국립목포해양대학교</span>
+                        <h3>대학 경쟁력 지수 요약</h3>
+                        <p>타 국립대학 대비 연구 역량 및 종합 지표 순위를 파악합니다.</p>
+                    </div>
+                </div>
+
+                <!-- 비교 대상 대학 6대 퀵 배너 -->
+                <div class="univ-quick-grid">
+                    <div class="univ-quick-card active" data-univ="mmu">
+                        <div class="univ-badge mmu-bg">목포해양</div>
+                        <span>목포해양대</span>
+                    </div>
+                    <div class="univ-quick-card" data-univ="kmou">
+                        <div class="univ-badge kmou-bg">한국해양</div>
+                        <span>한국해양대</span>
+                    </div>
+                    <div class="univ-quick-card" data-univ="kit">
+                        <div class="univ-badge kit-bg">금오공대</div>
+                        <span>금오공대</span>
+                    </div>
+                    <div class="univ-quick-card" data-univ="mnu">
+                        <div class="univ-badge mnu-bg">목포대</div>
+                        <span>목포대</span>
+                    </div>
+                    <div class="univ-quick-card" data-univ="scnu">
+                        <div class="univ-badge scnu-bg">순천대</div>
+                        <span>순천대</span>
+                    </div>
+                    <div class="univ-quick-card" data-univ="ksnu">
+                        <div class="univ-badge ksnu-bg">군산대</div>
+                        <span>군산대</span>
+                    </div>
+                </div>
+
+                <!-- 대학 기본 지표 요약 카드 -->
+                <div class="section-title">
+                    <h4>목포해양대 지표 분포 요약</h4>
+                </div>
+                <div class="stats-mini-grid">
+                    <div class="mini-stat-card">
+                        <span class="lbl">1인당 연구비</span>
+                        <h4 id="home-stat-funding">8,500만원</h4>
+                        <span class="rank-badge rank-3">국립대 3위</span>
+                    </div>
+                    <div class="mini-stat-card">
+                        <span class="lbl">SCI급 논문 (1인당)</span>
+                        <h4 id="home-stat-sci">0.48건</h4>
+                        <span class="rank-badge rank-3">국립대 3위</span>
+                    </div>
+                    <div class="mini-stat-card">
+                        <span class="lbl">졸업생 취업률</span>
+                        <h4 id="home-stat-employment">83.1%</h4>
+                        <span class="rank-badge rank-1">국립대 1위</span>
+                    </div>
+                    <div class="mini-stat-card">
+                        <span class="lbl">1인당 교육비</span>
+                        <h4 id="home-stat-education">1,850만원</h4>
+                        <span class="rank-badge rank-2">국립대 2위</span>
+                    </div>
+                </div>
+
+                <!-- 종합 경쟁력 차트 -->
+                <div class="card-container">
+                    <div class="card-header">
+                        <h5>6대 국립대학 연구비 수혜액 비교</h5>
+                        <p>전임교원 1인당 총 외부/교내 연구비 지원 규모</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="homeOverviewChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 연구 분석 탭 (Research) -->
+            <section id="tab-research" class="tab-view">
+                <!-- 상단 필터 스위치 -->
+                <div class="filter-switch-row">
+                    <button class="filter-btn active" data-filter="funding"><i data-lucide="wallet"></i> 1인당 연구비</button>
+                    <button class="filter-btn" data-filter="papers"><i data-lucide="file-text"></i> 1인당 논문실적</button>
+                </div>
+
+                <!-- 연구비/논문 비교 분석 카드 -->
+                <div class="card-container">
+                    <div class="card-header">
+                        <h5 id="research-chart-title">대학별 전임교원 1인당 연구비 비교</h5>
+                        <p id="research-chart-desc">단위: 만원 / 2026년 공시 기준</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="researchCompareChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 연구 가성비/효율성 정보 카드 -->
+                <div class="efficiency-banner">
+                    <div class="eff-icon"><i data-lucide="zap"></i></div>
+                    <div class="eff-details">
+                        <h5>연구 효율성 분석 (가성비)</h5>
+                        <p id="eff-text">연구비 1억원 대비 SCI급 논문 게재수 1위: <strong>목포해양대</strong> (효율성 지수 우수)</p>
+                    </div>
+                </div>
+
+                <!-- 6대 대학 연구 역량 테이블 -->
+                <div class="card-container" style="margin-top: 16px;">
+                    <div class="card-header">
+                        <h5>6대 국립대학 연구분야 공시 통계</h5>
+                    </div>
+                    <div class="table-scroll-wrapper">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>학교명</th>
+                                    <th>1인당 연구비</th>
+                                    <th>SCI급 논문</th>
+                                    <th>등재지 논문</th>
+                                    <th>저역서 실적</th>
+                                </tr>
+                            </thead>
+                            <tbody id="research-table-body">
+                                <!-- JS에서 동적으로 매핑 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 1대1 매치 탭 (Matchup) -->
+            <section id="tab-matchup" class="tab-view">
+                <!-- 대학 매치업 선택 선택창 -->
+                <div class="matchup-selector-row">
+                    <div class="select-box-wrap">
+                        <label for="match-univ-a">대학 A (기준)</label>
+                        <select id="match-univ-a" disabled>
+                            <option value="mmu" selected>국립목포해양대</option>
+                        </select>
+                    </div>
+                    <div class="match-vs-badge">VS</div>
+                    <div class="select-box-wrap">
+                        <label for="match-univ-b">대학 B (비교)</label>
+                        <select id="match-univ-b">
+                            <option value="kmou" selected>국립한국해양대</option>
+                            <option value="kit">국립금오공대</option>
+                            <option value="mnu">국립목포대</option>
+                            <option value="scnu">국립순천대</option>
+                            <option value="ksnu">국립군산대</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 방사형 다차원 경쟁력 차트 -->
+                <div class="card-container">
+                    <div class="card-header">
+                        <h5>다차원 경쟁력 분석 (5대 핵심 영역)</h5>
+                        <p>연구비, SCI논문, 취업률, 교육비, 신입생 충원 현황 비교</p>
+                    </div>
+                    <div class="chart-wrapper-radar">
+                        <canvas id="matchupRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 1대1 스코어보드 카드 -->
+                <div class="section-title">
+                    <h4>핵심 지표 맞대결 스코어</h4>
+                </div>
+                <div class="matchup-scoreboard" id="matchup-score-list">
+                    <!-- JS에서 1대1 지표 매칭에 따라 렌더링 -->
+                </div>
+
+                <!-- 강점/약점 분석 카드 -->
+                <div class="analysis-box-grid">
+                    <div class="analysis-card strength">
+                        <h5><i data-lucide="plus-circle"></i> 목포해양대 우위 요인</h5>
+                        <ul id="strength-list">
+                            <li>취업률 (83.1% vs 72.5%) - 월등한 해사 취업망</li>
+                        </ul>
+                    </div>
+                    <div class="analysis-card weakness">
+                        <h5><i data-lucide="minus-circle"></i> 목포해양대 보완 요인</h5>
+                        <ul id="weakness-list">
+                            <li>1인당 연구비 지원 규모 보완 필요</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 시뮬레이터 탭 (Simulator) -->
+            <section id="tab-simulator" class="tab-view">
+                <div class="simulator-intro">
+                    <i data-lucide="sliders" class="sim-icon"></i>
+                    <div>
+                        <h5>목포해양대 연구경쟁력 시뮬레이션</h5>
+                        <p>연구비 및 논문 지표를 움직여 가상 경쟁력 순위를 확인하세요.</p>
+                    </div>
+                </div>
+
+                <!-- 실시간 모의 랭킹 보드 -->
+                <div class="card-container">
+                    <div class="card-header flex-header">
+                        <h5>실시간 모의 연구경쟁력 랭킹</h5>
+                        <span class="badge badge-accent" id="sim-mmu-rank-badge">목포해양대 3위</span>
+                    </div>
+                    <div class="sim-leaderboard" id="sim-ranking-list">
+                        <!-- JS에서 실시간 순위 재배열 렌더링 -->
+                    </div>
+                </div>
+
+                <!-- 조절 슬라이더 패널 -->
+                <div class="card-container simulator-controls">
+                    <div class="card-header">
+                        <h5>목포해양대 연구 지표 조작기</h5>
+                    </div>
+                    
+                    <!-- 슬라이더 1: 1인당 연구비 -->
+                    <div class="slider-group">
+                        <div class="slider-info">
+                            <span class="label">전임교원 1인당 연구비</span>
+                            <span class="value" id="sim-val-funding">8,500만원</span>
+                        </div>
+                        <input type="range" id="sim-slider-funding" min="3000" max="18000" step="500" value="8500">
+                        <div class="slider-limits">
+                            <span>최소 3,000만</span>
+                            <span>최대 1억 8,000만</span>
+                        </div>
+                    </div>
+
+                    <!-- 슬라이더 2: 1인당 SCI 논문 -->
+                    <div class="slider-group">
+                        <div class="slider-info">
+                            <span class="label">1인당 SCI급 논문실적</span>
+                            <span class="value" id="sim-val-sci">0.48건</span>
+                        </div>
+                        <input type="range" id="sim-slider-sci" min="0.10" max="1.00" step="0.02" value="0.48">
+                        <div class="slider-limits">
+                            <span>최소 0.10건</span>
+                            <span>최대 1.00건</span>
+                        </div>
+                    </div>
+
+                    <!-- 모의 경쟁력 종합지수 게이지 -->
+                    <div class="simulator-gauge-area">
+                        <div class="gauge-card">
+                            <span class="gauge-lbl">가상 연구 경쟁력 지수</span>
+                            <h3 id="sim-mmu-score">68.5점</h3>
+                            <div class="gauge-bar-outer"><div class="gauge-bar-inner" id="sim-mmu-score-bar" style="width: 68.5%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. 정보 탭 (Info) -->
+            <section id="tab-info" class="tab-view">
+                <div class="card-container info-panel">
+                    <h3>대학 경쟁력 비교기 개요</h3>
+                    <p>본 어플리케이션은 국립목포해양대학교 기획조정처 성과관리센터에서 개발한 스마트폰 전용 대학 비교 소프트웨어입니다.</p>
+                    
+                    <div class="info-item">
+                        <div class="info-title"><i data-lucide="database"></i> 공시 데이터 출처</div>
+                        <div class="info-desc">본 어플리케이션에 수록된 대학별 통계 정보는 교육부 한국대학교육협의회 공인 공시 사이트인 **대학알리미(academyinfo.go.kr)**의 최근 3개년 대학 공시 데이터를 표준화하여 반영하였습니다.</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-title"><i data-lucide="award"></i> 연구 경쟁력 지수 산출식</div>
+                        <div class="info-desc"><strong>연구경쟁력 지수(Research Index) = 1인당 연구비 수혜액 가중치(40%) + SCI급 국제논문 가중치(45%) + 국내등재지 및 저역서 가중치(15%)</strong>의 수치를 100점 만점으로 정규화하여 산출합니다.</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-title"><i data-lucide="smartphone"></i> 홈 화면에 어플 설치 방법 (PWA)</div>
+                        <div class="info-desc">
+                            *   **안드로이드(Chrome)**: 주소창 우측의 더보기(점 3개)를 누르고 **[홈 화면에 추가]** 또는 **[앱 설치]**를 선택합니다.<br>
+                            *   **아이폰(Safari)**: 하단의 공유 아이콘(내보내기)을 누르고 아래로 스크롤하여 **[홈 화면에 추가]**를 클릭합니다.<br>
+                            바탕화면에 아이콘이 생성되어 독립 앱처럼 가동됩니다.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 하단 고정 탭 바 -->
+        <footer class="app-tab-bar">
+            <div class="tab-item active" data-tab="home">
+                <i data-lucide="home"></i>
+                <span>홈</span>
+            </div>
+            <div class="tab-item" data-tab="research">
+                <i data-lucide="microscope"></i>
+                <span>연구 분석</span>
+            </div>
+            <div class="tab-item" data-tab="matchup">
+                <i data-lucide="swords"></i>
+                <span>1대1 매치</span>
+            </div>
+            <div class="tab-item" data-tab="simulator">
+                <i data-lucide="sliders"></i>
+                <span>시뮬레이터</span>
+            </div>
+            <div class="tab-item" data-tab="info">
+                <i data-lucide="info"></i>
+                <span>정보</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 모바일 연동 스크립트 로드 -->
+    <script src="compare_app.js"></script>
+</body>
+</html>

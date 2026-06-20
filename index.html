@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국립목포해양대학교 대학정보 분석 포털</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-navy: #001F3F;
+            --accent-blue: #005A9C;
+            --accent-green: #009639;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 배경 데코레이션 (바다 물결 형상화) */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 43%;
+            background: linear-gradient(135deg, rgba(0, 90, 156, 0.05) 0%, rgba(0, 150, 57, 0.05) 100%);
+            z-index: -1;
+            animation: rotate-bg 25s infinite linear;
+        }
+
+        body::before {
+            top: -200px;
+            right: -200px;
+        }
+
+        body::after {
+            bottom: -300px;
+            left: -300px;
+            animation-duration: 35s;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .portal-container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* 대학 로고 영역 */
+        .portal-header {
+            margin-bottom: 48px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            border-radius: 20px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 90, 156, 0.25);
+        }
+
+        .logo-badge i {
+            width: 36px;
+            height: 36px;
+        }
+
+        .portal-header h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary-navy);
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .portal-header h1 span {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            color: var(--accent-blue);
+        }
+
+        .portal-header p {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* 서비스 카드 듀오 */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .portal-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: left;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        /* 카드 마우스 호버 효과 */
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 90, 156, 0.1);
+            border-color: rgba(0, 90, 156, 0.2);
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: var(--transition-smooth);
+        }
+
+        .admin-card .card-icon-box {
+            background-color: rgba(0, 90, 156, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .app-card .card-icon-box {
+            background-color: rgba(0, 150, 57, 0.1);
+            color: var(--accent-green);
+        }
+
+        .portal-card:hover .card-icon-box {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .portal-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 12px;
+        }
+
+        .portal-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            flex-grow: 1;
+        }
+
+        .card-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: var(--transition-smooth);
+        }
+
+        .admin-card .card-action-btn { color: var(--accent-blue); }
+        .app-card .card-action-btn { color: var(--accent-green); }
+
+        .portal-card:hover .card-action-btn i {
+            transform: translateX(6px);
+        }
+
+        .card-action-btn i {
+            width: 16px;
+            height: 16px;
+            transition: var(--transition-smooth);
+        }
+
+        /* 기기 뱃지 */
+        .device-badge {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        /* 하단 푸터 */
+        .portal-footer {
+            font-size: 12px;
+            color: var(--text-muted);
+            animation: fadeIn 1s ease;
+        }
+
+        .portal-footer span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 반응형 레이아웃 */
+        @media (max-width: 768px) {
+            .portal-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .portal-header h1 {
+                font-size: 26px;
+            }
+            .portal-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <!-- 헤더 및 대학 상징 로고 -->
+        <header class="portal-header">
+            <div class="logo-badge">
+                <i data-lucide="anchor"></i>
+            </div>
+            <h1>국립목포해양대학교 <span>Data Portal</span></h1>
+            <p>대학알리미 정보를 활용한 실시간 성과관리 및 국립대 경쟁력 비교분석 시스템</p>
+        </header>
+
+        <!-- 게이트웨이 그리드 -->
+        <div class="portal-grid">
+            <!-- 카드 1: 성과관리 시스템 -->
+            <a href="admin.html" class="portal-card admin-card">
+                <span class="device-badge"><i data-lucide="monitor" style="width: 10px; height: 10px; display: inline; vertical-align: middle; margin-right: 4px;"></i>데스크톱</span>
+                <div class="card-icon-box">
+                    <i data-lucide="layout-dashboard"></i>
+                </div>
+                <h2>대학 성과관리 시스템</h2>
+                <p>신입생/재학생 충원율, 취업률, 교원 확보 및 연구실적 등 대학의 연도별 핵심 성과지표(KPI)를 실시간 업데이트 및 가시화하는 관리자 분석 대시보드입니다.</p>
+                <div class="card-action-btn">
+                    <span>시스템 바로가기</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- 카드 2: 경쟁력 비교분석기 어플 -->
+            <a href="compare.html" class="portal-card app-card">
+                <span class="device-badge"><i data-lucide="smartphone" style="width: 10px; height: 10px; display: inline; vertical-align: middle; margin-right: 4px;"></i>스마트폰</span>
+                <div class="card-icon-box">
+                    <i data-lucide="smartphone-charging"></i>
+                </div>
+                <h2>대학 경쟁력 비교 분석기</h2>
+                <p>목포해양대를 한국해양대, 목포대, 순천대, 군산대, 금오공대와 스마트폰을 통해 1대1 매치 및 방사형 차트로 비교하고, 연구 역량(논문, 연구비)을 정밀 분석하는 전용 모바일 웹 앱입니다.</p>
+                <div class="card-action-btn">
+                    <span>어플리케이션 바로가기</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- 푸터 -->
+        <footer class="portal-footer">
+            <p>© 2026 국립목포해양대학교. 기획조정처 <span>성과관리센터</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Lucide 아이콘 초기화
+        lucide.createIcons();
+    </script>
+</body>
+</html>

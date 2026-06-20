@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국립목포해양대학교 대학성과관리 시스템</title>
+    <!-- 구글 폰트: Pretendard 대체용 Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons (아이콘 패키지) CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 커스텀 스타일시트 -->
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 사이드바 네비게이션 -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <i data-lucide="anchor"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>국립목포해양대</h1>
+                    <span>성과관리시스템 (IR)</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-tab="dashboard">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>종합 대시보드</span>
+                    </li>
+                    <li class="nav-item" data-tab="kpi">
+                        <i data-lucide="bar-chart-3"></i>
+                        <span>핵심 성과지표 (KPI)</span>
+                    </li>
+                    <li class="nav-item" data-tab="faculty">
+                        <i data-lucide="graduation-cap"></i>
+                        <span>교원 & 연구실적</span>
+                    </li>
+                    <li class="nav-item" data-tab="sync">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>대학알리미 연동</span>
+                        <span class="badge pulse">실시간</span>
+                    </li>
+                    <li class="nav-item" data-tab="editor">
+                        <i data-lucide="sliders"></i>
+                        <span>수동 데이터 편집</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>© 2026 국립목포해양대학교</p>
+                <small>기획조정처 성과관리센터</small>
+            </div>
+        </aside>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="main-content">
+            <!-- 탑 헤더 -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h2 id="view-title">종합 대시보드</h2>
+                    <p id="view-description">대학의 6대 핵심 운영 성과 지표와 목표 달성 현황을 모니터링합니다.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="academic-year-selector">
+                        <label for="current-year-select">공시 연도:</label>
+                        <select id="current-year-select">
+                            <option value="2026" selected>2026년 (최신)</option>
+                            <option value="2025">2025년</option>
+                            <option value="2024">2024년</option>
+                        </select>
+                    </div>
+                    <button id="quick-sync-btn" class="btn btn-secondary">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>간편 동기화</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 뷰 컨테이너 -->
+            <div class="content-body">
+
+                <!-- 1. 종합 대시보드 뷰 -->
+                <section id="tab-dashboard" class="tab-view active">
+                    <!-- 요약 카드 그리드 -->
+                    <div class="metrics-grid">
+                        <!-- 카드 1: 재학생 충원율 -->
+                        <div class="metric-card glass-panel" data-kpi="retention">
+                            <div class="card-header">
+                                <span>재학생 충원율</span>
+                                <div class="card-icon retention-icon"><i data-lucide="users"></i></div>
+                            </div>
+                            <div class="card-value"><span class="value-num">0.0</span>%</div>
+                            <div class="card-progress-bar">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="trend up"><i data-lucide="trending-up"></i> <span class="trend-val">0.0%p</span></span>
+                                <span class="label">목표 대비 달성률: <span class="target-achievement">0%</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 카드 2: 취업률 -->
+                        <div class="metric-card glass-panel" data-kpi="employment">
+                            <div class="card-header">
+                                <span>졸업생 취업률</span>
+                                <div class="card-icon employment-icon"><i data-lucide="briefcase"></i></div>
+                            </div>
+                            <div class="card-value"><span class="value-num">0.0</span>%</div>
+                            <div class="card-progress-bar">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="trend up"><i data-lucide="trending-up"></i> <span class="trend-val">0.0%p</span></span>
+                                <span class="label">목표 대비 달성률: <span class="target-achievement">0%</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 카드 3: 신입생 충원율 -->
+                        <div class="metric-card glass-panel" data-kpi="freshman">
+                            <div class="card-header">
+                                <span>신입생 충원율</span>
+                                <div class="card-icon freshman-icon"><i data-lucide="user-plus"></i></div>
+                            </div>
+                            <div class="card-value"><span class="value-num">0.0</span>%</div>
+                            <div class="card-progress-bar">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="trend down"><i data-lucide="trending-down"></i> <span class="trend-val">0.0%p</span></span>
+                                <span class="label">목표 대비 달성률: <span class="target-achievement">0%</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 카드 4: 전임교원 확보율 -->
+                        <div class="metric-card glass-panel" data-kpi="faculty_ratio">
+                            <div class="card-header">
+                                <span>전임교원 확보율</span>
+                                <div class="card-icon faculty-icon"><i data-lucide="award"></i></div>
+                            </div>
+                            <div class="card-value"><span class="value-num">0.0</span>%</div>
+                            <div class="card-progress-bar">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="trend up"><i data-lucide="trending-up"></i> <span class="trend-val">0.0%p</span></span>
+                                <span class="label">목표 대비 달성률: <span class="target-achievement">0%</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 대시보드 차트 그리드 -->
+                    <div class="charts-grid-two">
+                        <div class="chart-container glass-panel">
+                            <div class="chart-header">
+                                <h3>핵심 성과지표 3개년 추이 (취업 및 충원)</h3>
+                                <p>최근 3년간의 신입생/재학생 충원율 및 취업률 변동 추세</p>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container glass-panel">
+                            <div class="chart-header">
+                                <h3>6대 운영지표 성과 분석 (KPI Radar)</h3>
+                                <p>각 성과지표별 목표 대비 현재 실적 백분율 비교</p>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 하단 성과 요약 및 안내 -->
+                    <div class="dashboard-bottom-grid">
+                        <div class="notice-board glass-panel">
+                            <div class="notice-header">
+                                <h3><i data-lucide="bell"></i> 성과관리센터 공지사항</h3>
+                                <button class="btn-text">전체보기</button>
+                            </div>
+                            <ul class="notice-list">
+                                <li>
+                                    <span class="notice-date">2026.06.12</span>
+                                    <a href="#" class="notice-title">2026학년도 대학알리미 주요 정보공시 실적 검증 완료 안내</a>
+                                    <span class="notice-dept">기획팀</span>
+                                </li>
+                                <li>
+                                    <span class="notice-date">2026.05.28</span>
+                                    <a href="#" class="notice-title">2026년 국립대학육성사업 성과 평가 지표 연동 수정의 건</a>
+                                    <span class="notice-dept">성과관리센터</span>
+                                </li>
+                                <li>
+                                    <span class="notice-date">2026.04.15</span>
+                                    <a href="#" class="notice-title">SCI급 연구논문 게재 장려금 신청 안내 (전임교원 대상)</a>
+                                    <span class="notice-dept">연구처</span>
+                                </li>
+                                <li>
+                                    <span class="notice-date">2026.03.10</span>
+                                    <a href="#" class="notice-title">GPS 대학 교육과정 핵심역량 자가진단(K-CESA) 실시 안내</a>
+                                    <span class="notice-dept">교육혁신실</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="specialization-panel glass-panel">
+                            <div class="notice-header">
+                                <h3><i data-lucide="compass"></i> 목포해양대학교 해양 특성화 실적</h3>
+                                <span class="badge badge-accent">우수</span>
+                            </div>
+                            <div class="specialization-body">
+                                <div class="spec-item">
+                                    <div class="spec-info">
+                                        <span class="spec-label">해사분야 취업률 전국 1위 유지</span>
+                                        <span class="spec-value">84.2%</span>
+                                    </div>
+                                    <div class="spec-bar"><div class="spec-progress" style="width: 84.2%"></div></div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-info">
+                                        <span class="spec-label">학생 1인당 교육비 확보 (국립대 최상위권)</span>
+                                        <span class="spec-value" id="education-cost-summary">0,000만원</span>
+                                    </div>
+                                    <div class="spec-bar"><div class="spec-progress" style="width: 90%" id="education-cost-progress"></div></div>
+                                </div>
+                                <div class="spec-info-cards">
+                                    <div class="info-mini-card">
+                                        <div class="mini-icon"><i data-lucide="globe"></i></div>
+                                        <div>
+                                            <h4>글로벌 승선실습</h4>
+                                            <p>매년 200명+ 파견</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-mini-card">
+                                        <div class="mini-icon"><i data-lucide="ship"></i></div>
+                                        <div>
+                                            <h4>실습선 보유 현황</h4>
+                                            <p>세계 최고 수준의 세계로호/새누리호</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. 핵심 성과지표 (KPI) 상세 분석 뷰 -->
+                <section id="tab-kpi" class="tab-view">
+                    <div class="kpi-detail-container">
+                        <!-- KPI 차트 & 분석 정보 -->
+                        <div class="kpi-detail-layout">
+                            <div class="kpi-select-list">
+                                <div class="kpi-select-item active" data-kpi-type="retention">
+                                    <h4>재학생 충원율</h4>
+                                    <p class="kpi-sub">학생들의 대학 만족도 및 유지 지표</p>
+                                    <div class="kpi-mini-status">
+                                        <span class="kpi-mini-val" id="kpi-mini-retention-val">00.0%</span>
+                                        <span class="badge badge-ok">달성</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-select-item" data-kpi-type="employment">
+                                    <h4>졸업생 취업률</h4>
+                                    <p class="kpi-sub">취업 교육 및 진로 지도의 결과 지표</p>
+                                    <div class="kpi-mini-status">
+                                        <span class="kpi-mini-val" id="kpi-mini-employment-val">00.0%</span>
+                                        <span class="badge badge-warning">미달</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-select-item" data-kpi-type="freshman">
+                                    <h4>신입생 충원율</h4>
+                                    <p class="kpi-sub">대학 입시 경쟁력 및 선호 지표</p>
+                                    <div class="kpi-mini-status">
+                                        <span class="kpi-mini-val" id="kpi-mini-freshman-val">00.0%</span>
+                                        <span class="badge badge-ok">달성</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-select-item" data-kpi-type="education_cost">
+                                    <h4>학생 1인당 교육비</h4>
+                                    <p class="kpi-sub">학생 1인에게 투자하는 총 재정 규모</p>
+                                    <div class="kpi-mini-status">
+                                        <span class="kpi-mini-val" id="kpi-mini-education-val">0,000만원</span>
+                                        <span class="badge badge-ok">달성</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="kpi-focus-panel glass-panel">
+                                <div class="focus-header">
+                                    <h3 id="kpi-focus-title">재학생 충원율 상세 분석</h3>
+                                    <span id="kpi-focus-status" class="badge">달성률 00%</span>
+                                </div>
+                                <div class="focus-body">
+                                    <div class="focus-charts">
+                                        <div class="focus-chart-wrapper">
+                                            <canvas id="kpiDetailChart"></canvas>
+                                        </div>
+                                        <div class="focus-stats">
+                                            <div class="stat-row">
+                                                <span class="stat-label">올해의 목표치</span>
+                                                <span class="stat-val" id="kpi-focus-target">0.0%</span>
+                                            </div>
+                                            <div class="stat-row">
+                                                <span class="stat-label">올해의 실제 실적</span>
+                                                <span class="stat-valhighlight" id="kpi-focus-actual">0.0%</span>
+                                            </div>
+                                            <div class="stat-row">
+                                                <span class="stat-label">전년 대비 변동</span>
+                                                <span class="stat-val" id="kpi-focus-diff">+0.0%p</span>
+                                            </div>
+                                            <div class="stat-info-desc">
+                                                <h5 class="desc-title"><i data-lucide="info"></i> 지표 정의 및 산출식</h5>
+                                                <p id="kpi-focus-formula">지표에 대한 산출식 로딩 중...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3개년 KPI 데이터 테이블 -->
+                        <div class="table-container glass-panel">
+                            <div class="table-header">
+                                <h3>핵심 성과지표(KPI) 3개년 전체 현황</h3>
+                                <button class="btn btn-sm btn-outline" id="kpi-table-export-btn"><i data-lucide="download"></i> CSV 다운로드</button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>성과지표명</th>
+                                        <th>단위</th>
+                                        <th>2024년 실적</th>
+                                        <th>2025년 실적</th>
+                                        <th>2026년 목표</th>
+                                        <th>2026년 실적</th>
+                                        <th>목표 달성여부</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="kpi-table-body">
+                                    <!-- JS에서 동적으로 채워짐 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. 교원 & 연구실적 뷰 -->
+                <section id="tab-faculty" class="tab-view">
+                    <div class="faculty-grid">
+                        <div class="faculty-left-panel glass-panel">
+                            <div class="chart-header">
+                                <h3>전임교원 확보율 추이 및 분석</h3>
+                                <p>교육부 권장 기준 대비 목포해양대학교의 교수 인력 확보 현황</p>
+                            </div>
+                            <div class="gauge-chart-container">
+                                <div class="gauge-chart-wrapper">
+                                    <canvas id="facultyGaugeChart"></canvas>
+                                </div>
+                                <div class="gauge-info">
+                                    <h4 id="faculty-ratio-percent">00.0%</h4>
+                                    <p>현재 확보율 (기준값: 100%)</p>
+                                    <span class="badge" id="faculty-ratio-status">기준 미달</span>
+                                </div>
+                            </div>
+                            <div class="faculty-stats-list">
+                                <div class="f-stat-card">
+                                    <span class="f-stat-lbl">학생 정원</span>
+                                    <span class="f-stat-val" id="f-student-count">0,000명</span>
+                                </div>
+                                <div class="f-stat-card">
+                                    <span class="f-stat-lbl">기준 교원 수</span>
+                                    <span class="f-stat-val" id="f-req-professors">000명</span>
+                                </div>
+                                <div class="f-stat-card">
+                                    <span class="f-stat-lbl">재직 전임교원</span>
+                                    <span class="f-stat-val" id="f-act-professors">000명</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faculty-right-panel glass-panel">
+                            <div class="chart-header">
+                                <h3>전임교원 1인당 연구 실적</h3>
+                                <p>연구재단 등재지 게재 건수, SCI급 국제학술지 실적 및 저서/역서 실적</p>
+                            </div>
+                            <div class="research-charts">
+                                <div class="research-chart-wrapper">
+                                    <canvas id="researchChart"></canvas>
+                                </div>
+                                <div class="research-summary-table">
+                                    <div class="research-summary-row">
+                                        <span class="lbl"><span class="dot sci"></span>SCI급 국제학술지</span>
+                                        <span class="val" id="res-sci-val">0.00건</span>
+                                    </div>
+                                    <div class="research-summary-row">
+                                        <span class="lbl"><span class="dot nrf"></span>연구재단 등재지</span>
+                                        <span class="val" id="res-nrf-val">0.00건</span>
+                                    </div>
+                                    <div class="research-summary-row">
+                                        <span class="lbl"><span class="dot books"></span>학술용 저서/역서</span>
+                                        <span class="val" id="res-books-val">0.00건</span>
+                                    </div>
+                                    <div class="research-summary-divider"></div>
+                                    <div class="research-summary-row total">
+                                        <span class="lbl">합산 연구실적</span>
+                                        <span class="val" id="res-total-val">0.00건 / 1인당</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container glass-panel" style="margin-top: 24px;">
+                        <div class="table-header">
+                            <h3>교원 확보 및 연구 역량 지표 분석 (최근 3개년)</h3>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>평가 지표명</th>
+                                    <th>단위</th>
+                                    <th>2024년 실적</th>
+                                    <th>2025년 실적</th>
+                                    <th>2026년 목표</th>
+                                    <th>2026년 실적</th>
+                                    <th>달성율</th>
+                                </tr>
+                            </thead>
+                            <tbody id="faculty-table-body">
+                                <!-- JS에서 동적으로 생성 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 4. 대학알리미 연동 (Sync) 뷰 -->
+                <section id="tab-sync" class="tab-view">
+                    <div class="sync-container">
+                        <div class="sync-grid-top">
+                            <!-- 실시간 API 연동 패널 -->
+                            <div class="sync-panel glass-panel">
+                                <div class="panel-header">
+                                    <h3><i data-lucide="globe"></i> 공공데이터포털 Open API 실시간 동기화</h3>
+                                    <span class="badge badge-accent">실시간 연동</span>
+                                </div>
+                                <p class="panel-desc">공공데이터포털(data.go.kr)의 '한국대학교육협의회 대학정보공시 API' 키를 이용하여 실시간으로 데이터를 다운로드하고 갱신합니다.</p>
+                                
+                                <div class="form-group">
+                                    <label for="api-key-input">공공데이터포털 오픈 API 서비스키 (Service Key)</label>
+                                    <div class="input-with-btn">
+                                        <input type="password" id="api-key-input" placeholder="인증키를 입력하세요 (또는 시뮬레이션 모드를 이용하려면 비워두세요)">
+                                        <button type="button" class="btn btn-outline" id="toggle-key-visibility"><i data-lucide="eye"></i></button>
+                                    </div>
+                                    <small class="form-help">입력하신 인증키는 개인 브라우저에만 저장되며 외부 서버로 절대 유출되지 않습니다.</small>
+                                </div>
+
+                                <div class="sync-options-row">
+                                    <div class="form-group inline">
+                                        <label for="api-year-select">대상 공시연도:</label>
+                                        <select id="api-year-select">
+                                            <option value="2026">2026년</option>
+                                            <option value="2025">2025년</option>
+                                            <option value="2024">2024년</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group inline">
+                                        <label for="cors-proxy-select">CORS 우회 방식:</label>
+                                        <select id="cors-proxy-select">
+                                            <option value="simulation" selected>API 패치 시뮬레이터 (추천)</option>
+                                            <option value="direct">직접 호출 (CORS 비허용 시 실패가능)</option>
+                                            <option value="proxy">공용 CORS 프록시 우회 호출</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="sync-actions">
+                                    <button id="api-sync-start-btn" class="btn btn-primary btn-block">
+                                        <i data-lucide="refresh-cw"></i>
+                                        <span>대학알리미 실시간 동기화 시작</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 대학알리미 공시파일 업로드 패널 -->
+                            <div class="sync-panel glass-panel">
+                                <div class="panel-header">
+                                    <h3><i data-lucide="file-up"></i> 대학알리미 공시파일 업로드</h3>
+                                    <span class="badge">추천</span>
+                                </div>
+                                <p class="panel-desc">API 키 발급 과정이 번거롭다면, 대학알리미에서 다운로드한 표준 데이터 엑셀/CSV/JSON 파일을 아래에 업로드하여 즉시 반영할 수 있습니다.</p>
+
+                                <div class="upload-dropzone" id="file-dropzone">
+                                    <input type="file" id="csv-file-input" accept=".csv,.json,.txt" class="hidden-input">
+                                    <div class="dropzone-content">
+                                        <i data-lucide="upload-cloud" class="upload-icon"></i>
+                                        <h4>파일을 마우스로 끌어다 놓거나 클릭하세요</h4>
+                                        <p>지원 파일 형식: CSV, JSON, TXT (대학알리미 공시 포맷)</p>
+                                    </div>
+                                </div>
+
+                                <div class="helper-links">
+                                    <a href="https://www.academyinfo.go.kr" target="_blank" class="link-btn"><i data-lucide="external-link"></i> 대학알리미 홈 바로가기</a>
+                                    <button id="load-sample-file-btn" class="btn btn-xs btn-secondary"><i data-lucide="file-spreadsheet"></i> 테스트용 샘플 파일 로드</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 실시간 API 연동 모니터링 로그 콘솔 -->
+                        <div class="console-panel glass-panel">
+                            <div class="console-header">
+                                <h3><i data-lucide="terminal"></i> 실시간 데이터 연동 콘솔 로그</h3>
+                                <div class="console-actions">
+                                    <span id="console-status-badge" class="badge-status-dot offline">연동 대기 중</span>
+                                    <button class="btn btn-xs btn-outline-dark" id="clear-console-btn">로그 초기화</button>
+                                </div>
+                            </div>
+                            <div class="console-body" id="sync-console-log">
+                                <span class="console-line system">[시스템] 대학알리미 실시간 데이터 수신 대기 상태입니다.</span>
+                                <span class="console-line system">[시스템] 상단의 '실시간 동기화 시작' 버튼을 누르거나 대학알리미 공시 파일을 업로드하세요.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. 데이터 수동 편집 (Editor) 뷰 -->
+                <section id="tab-editor" class="tab-view">
+                    <div class="editor-container glass-panel">
+                        <div class="editor-header-bar">
+                            <div>
+                                <h3>성과 지표 원본 데이터 수동 편집</h3>
+                                <p>각 연도별 대학 성과지표 및 목표치를 수정하고 데이터베이스(LocalStorage)에 직접 저장합니다.</p>
+                            </div>
+                            <div class="editor-actions-top">
+                                <button id="reset-default-btn" class="btn btn-danger-outline"><i data-lucide="rotate-ccw"></i> 기본값 초기화</button>
+                            </div>
+                        </div>
+
+                        <div class="editor-form-layout">
+                            <div class="year-tab-buttons">
+                                <button class="year-btn active" data-edit-year="2026">2026학년도 (목표/실적)</button>
+                                <button class="year-btn" data-edit-year="2025">2025학년도 (실적)</button>
+                                <button class="year-btn" data-edit-year="2024">2024학년도 (실적)</button>
+                            </div>
+
+                            <form id="metrics-editor-form" class="editor-form">
+                                <div class="form-grid">
+                                    <!-- 지표 1: 재학생 충원율 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="users"></i> 재학생 충원율</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-retention-actual">실제 실적 (%)</label>
+                                                <input type="number" id="edit-retention-actual" step="0.01" min="0" max="100" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-retention-target">목표치 (%)</label>
+                                                <input type="number" id="edit-retention-target" step="0.01" min="0" max="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 지표 2: 졸업생 취업률 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="briefcase"></i> 졸업생 취업률</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-employment-actual">실제 실적 (%)</label>
+                                                <input type="number" id="edit-employment-actual" step="0.01" min="0" max="100" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-employment-target">목표치 (%)</label>
+                                                <input type="number" id="edit-employment-target" step="0.01" min="0" max="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 지표 3: 신입생 충원율 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="user-plus"></i> 신입생 충원율</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-freshman-actual">실제 실적 (%)</label>
+                                                <input type="number" id="edit-freshman-actual" step="0.01" min="0" max="100" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-freshman-target">목표치 (%)</label>
+                                                <input type="number" id="edit-freshman-target" step="0.01" min="0" max="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 지표 4: 학생 1인당 교육비 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="wallet"></i> 학생 1인당 교육비</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-education-actual">실제 실적 (만원)</label>
+                                                <input type="number" id="edit-education-actual" step="1" min="0" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-education-target">목표치 (만원)</label>
+                                                <input type="number" id="edit-education-target" step="1" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 지표 5: 전임교원 확보율 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="award"></i> 전임교원 확보율</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-prof-ratio-actual">실제 실적 (%)</label>
+                                                <input type="number" id="edit-prof-ratio-actual" step="0.01" min="0" max="200" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-prof-ratio-target">목표치 (%)</label>
+                                                <input type="number" id="edit-prof-ratio-target" step="0.01" min="0" max="200">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 지표 6: 전임교원 연구실적 -->
+                                    <div class="form-section-card">
+                                        <h4><i data-lucide="file-text"></i> 전임교원 연구실적 (1인당)</h4>
+                                        <div class="form-row">
+                                            <div class="form-col">
+                                                <label for="edit-research-sci">SCI급 국제지 (건)</label>
+                                                <input type="number" id="edit-research-sci" step="0.01" min="0" required>
+                                            </div>
+                                            <div class="form-col">
+                                                <label for="edit-research-nrf">연구재단 등재지 (건)</label>
+                                                <input type="number" id="edit-research-nrf" step="0.01" min="0" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" style="margin-top: 12px;">
+                                            <div class="form-col">
+                                                <label for="edit-research-books">저서 및 역서 (건)</label>
+                                                <input type="number" id="edit-research-books" step="0.01" min="0" required>
+                                            </div>
+                                            <div class="form-col val-target-only">
+                                                <label for="edit-research-target">전체 목표치 합계 (건)</label>
+                                                <input type="number" id="edit-research-target" step="0.01" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions-bottom">
+                                    <button type="submit" class="btn btn-primary btn-large"><i data-lucide="save"></i> 변경사항 저장</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- 커스텀 JS 파일 로드 -->
+    <script src="admin_app.js"></script>
+</body>
+</html>
